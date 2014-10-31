@@ -1,1 +1,1 @@
-__all__=["run_cal","start"]
+__all__=["run_calculation","start","dos_calculation","text_editor","draw_graph"]
