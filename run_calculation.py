@@ -14,34 +14,43 @@ class Run_Calculation():
 	self.exist = False
     def show_entry(self,op):
 	if op==4:
+	    f = open("/home/wien2k/work/gui/qsub.sh","w")
+	    r = open("/home/wien2k/work/gui/qsub_bone.txt","r")
 	    instruction = "/home/wien2k/wien2k/run_lapw "
 	    if self.init_toggles[0]:
-		instruction += "-ec " + self.ec_value.get() + " "
+		instruction += "-ec " + self.ec_value.get() + " -p "
+	    
+	    #print instruction
+	    
+
+	    test_script = open("/home/wien2k/work/gui/testshell.sh","w")
+	    f.write("#!/bin/tcsh -f\n")
+	    f.write("#PBS -l nodes=1:ppn=4\n")
+	    f.write("##PBS -l nodes=x028:ppn=4\n")
+	    f.write("#PBS -N BT-K56000\n")
+
+
+	    for line in r.readlines():
+		f.write(line)
+	    f.write(instruction)
+	    f.write("\nsave_lapw -a -f -d scf\n")
+
+	    test_script.write(instruction)
+	    test_script.write("\nsave_lapw -a -f -d scf\n")
 	    if self.init_toggles[1]:
-		instruction +="-so "
-	    if self.init_toggles[2]:
-		instruction +="-p "
-		self.write_machines(self.p_value.get())
-	    if self.init_toggles[3]:
-
-		'''if os.path.exists("/home/wien2k/work/gui/gui.dayfile"):
-			f = open("/home/wien2k/work/gui/gui.dayfile","r")
-			for line in f.readlines():
-			    if "ec cc and fc_conv 1 1 1" in line:
-				self.result=0
-				break'''
-			
-
-
-
-
-		instruction = "qsub ../test/qsub.sh"
-	    '''else:
-		instruction+=">>std.out"'''
-	
-	    print instruction
+		f.write("initso\n")
+		f.write("run_lapw -so -p -ec "+self.ec_value.get()+"\n")
+		f.write("save_lapw -a -f -d so-scf\n")
+		
+		test_script.write("initso\n")
+		test_script.write("run_lapw -so -p -ec "+self.ec_value.get()+"\n")
+		test_script.write("save_lapw -a -f -d so-scf\n")
+	    
+	    test_script.close()
+	    os.system("chmod +x testshell.sh")
+	    os.system("./testshell.sh")
 	    #os.system(instruction)
-	    if not self.init_toggles[3]:
+	    '''if not self.init_toggles[3]:
 		if self.init_toggles[1]:
 		    instruction = "/home/wien2k/wien2k/initso_lapw"
 		p = subprocess.Popen(instruction,shell=True, stdout=subprocess.PIPE)
@@ -59,8 +68,7 @@ class Run_Calculation():
 			break
 	    
 
-
-	    return
+	    '''
 
 	if not self.init_toggles[op]:
 	    self.init_toggles[op] = True
