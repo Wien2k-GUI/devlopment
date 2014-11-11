@@ -27,6 +27,7 @@ class Text_Editor():
     def exit_command(self):
         if tkMessageBox.askokcancel("Quit", "Do you really want to quit?"):
             self.text_editor.destroy()
+	    os.system("python draw_graph.py")
 
     def __init__(self,root, right_frame):
         self.root = root

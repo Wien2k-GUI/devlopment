@@ -110,6 +110,7 @@ class Application(Frame):
 		self.run_cal.destroy_menu()
 		self.radio_buttons[1].config(image = self.left_button_1[1])
 		self.run_cal_menu=0
+		self.dos_cal.so_execute = self.run_cal.so_execute
 	    print 3
 	    self.dos_cal.create_menu()
 	    self.dos_cal_menu = 1

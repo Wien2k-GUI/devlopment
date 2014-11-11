@@ -1,6 +1,7 @@
 import os
 import start
 import run_calculation
+import tkMessageBox
 import text_editor
 import time
 import subprocess
@@ -10,21 +11,41 @@ class Dos_Calculation():
     def __init__(self,root, right_frame):
 	self.root = root
 	self.right_frame = right_frame
+	self.so_execute = False
 
 
     def show_entry(self,op):
         if op==2:#When Excute button is toggled
             instruction = "/home/wien2k/wien2k/x lapw2 -qtl "
 	    
-	    self.text_editor = text_editor.Text_Editor(self.root,self.right_frame)
-	    self.text_editor.show_entry()
             if self.init_toggles[0]:
-		instruction +="-so "
+		if self.so_execute:
+		    instruction +="-so "
+		else:
+		    tkMessageBox.showwarning("Warning","so option is not yet executed.")
 
             if self.init_toggles[1]:
 		instruction +="-p "
-		self.write_machines(self.p_value.get())
+		#self.write_machines(self.p_value.get())
 
+	    f = open("/home/wien2k/work/gui/qsub.sh","w")
+	    r = open("/home/wien2k/work/gui/qsub_bone.txt","r")
+	
+	    f.write("#!/bin/tcsh -f\n")
+            f.write("#PBS -l nodes=1:ppn=4\n")
+            f.write("##PBS -l nodes=x028:ppn=4\n")
+            f.write("#PBS -N BT-K56000\n")
+
+
+            for line in r.readlines():
+                f.write(line)
+            f.write(instruction)
+	    f.close()
+
+	    
+
+	    self.text_editor = text_editor.Text_Editor(self.root,self.right_frame)
+	    self.text_editor.show_entry()
             return
 
 

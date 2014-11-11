@@ -12,6 +12,7 @@ class Run_Calculation():
 	self.root = root
 	self.right_frame=right_frame 
 	self.exist = False
+	self.so_execute=False
     def show_entry(self,op):
 	if op==4:
 	    f = open("/home/wien2k/work/gui/qsub.sh","w")
@@ -38,6 +39,7 @@ class Run_Calculation():
 	    test_script.write(instruction)
 	    test_script.write("\nsave_lapw -a -f -d scf\n")
 	    if self.init_toggles[1]:
+		self.so_execute = True
 		f.write("initso\n")
 		f.write("run_lapw -so -p -ec "+self.ec_value.get()+"\n")
 		f.write("save_lapw -a -f -d so-scf\n")
@@ -47,6 +49,7 @@ class Run_Calculation():
 		test_script.write("save_lapw -a -f -d so-scf\n")
 	    
 	    test_script.close()
+	    f.close()
 	    os.system("chmod +x testshell.sh")
 	    os.system("./testshell.sh")
 	    #os.system(instruction)
