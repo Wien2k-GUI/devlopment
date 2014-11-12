@@ -5,6 +5,7 @@ from Tkinter import *
 #from gui import run_cal as run_cal
 import run_calculation as run_cal
 import dos_calculation as dos_cal
+import transport
 
 tab_mode=0
 class Application(Frame):
@@ -16,6 +17,7 @@ class Application(Frame):
 	self.initial_cal = 0
 	self.run_cal_menu = 0
 	self.dos_cal_menu = 0
+	self.trans_menu = 0
 	self.create_frames()
     def create_frames(self):
 	self.left_frame = Frame(self.master, background="white",borderwidth=2,
@@ -29,6 +31,7 @@ class Application(Frame):
 	
 	self.run_cal = run_cal.Run_Calculation(self.root, self.right_frame)
 	self.dos_cal = dos_cal.Dos_Calculation(self.root, self.right_frame)
+	self.transport = transport.Transport(self.root, self.right_frame)
 
 	self.tab_menu = IntVar()
 	self.radio_buttons =[]
@@ -50,7 +53,7 @@ class Application(Frame):
 	self.empty_label = Label(self.left_frame, background="white",image = self.left_up)
 	self.empty_label.grid(row=0,column=0)
 
-	for text, var in [('Initial Calculation',1), ('Run Calculation',2),('Dos Calculation',3)]:
+	for text, var in [('Initial Calculation',1), ('Run Calculation',2),('Dos Calculation',3),('Transport',4)]:
 		
 		temp = Radiobutton(self.left_frame, text=text, value=var,indicatoron=0,
 				variable = self.tab_menu,command=self.verify,
@@ -81,6 +84,11 @@ class Application(Frame):
 		self.radio_buttons[2].config(image = self.left_button_1[2])
 		self.dos_cal.destroy_menu()
 		self.dos_cal_menu=0
+
+	    elif self.trans_menu:
+		self.radio_button[3].config(image = self.left_button_1[2])
+		self.transport.destroy_menu()
+		self.trans_menu = 0
 	    self.initial_cal = 1
 	    self.initial_calculation()
 	elif self.tab_menu.get()==2:
@@ -97,6 +105,10 @@ class Application(Frame):
                 self.dos_cal.destroy_menu()
                 self.dos_cal_menu=0
 
+	    elif self.trans_menu:
+		self.radio_buttons[3].config(image = self.left_button_1[2])
+		self.transport.destroy_menu()
+		self.trans_menu = 0
 	    self.run_cal.create_menu()
 	    self.run_cal_menu = 1
 	    self.radio_buttons[1].config(image = self.left_button_2[1])
@@ -111,9 +123,31 @@ class Application(Frame):
 		self.radio_buttons[1].config(image = self.left_button_1[1])
 		self.run_cal_menu=0
 		self.dos_cal.so_execute = self.run_cal.so_execute
+	    elif self.trans_menu:
+		self.radio_buttons[3].config(image = self.left_button_1[2])
+		self.transport.destroy_menu()
+		self.trans_menu = 0
 	    print 3
 	    self.dos_cal.create_menu()
 	    self.dos_cal_menu = 1
+	elif self.tab_menu.get()==4:
+	    self.radio_buttons[3].config(image = self.left_button_2[2])
+	    if self.initial_cal:
+                self.destroy_initial()
+                self.radio_buttons[0].config(image = self.left_button_1[0])
+                self.initial_cal = 0
+            elif self.run_cal_menu and self.run_cal.exist:
+                self.run_cal.destroy_menu()
+                self.radio_buttons[1].config(image = self.left_button_1[1])
+                self.run_cal_menu=0
+                self.dos_cal.so_execute = self.run_cal.so_execute
+            elif self.dos_cal_menu:
+                self.radio_buttons[2].config(image = self.left_button_1[2])
+                self.dos_cal.destroy_menu()
+                self.dos_cal_menu=0
+	    print 4
+	    self.transport.create_menu()
+	    self.trans_menu = 1
     def show_entry(self,op):
 	if op==6:#When Excute button is toggled
 	    instruction = "/home/wien2k/wien2k/init_lapw -b "
