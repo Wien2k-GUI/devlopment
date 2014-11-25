@@ -12,6 +12,40 @@ class Dos_Calculation():
 	self.root = root
 	self.right_frame = right_frame
 	self.so_execute = False
+    def execute_dos_cal(self, atom_num):
+	pass
+
+    def make_dos_option(self, atom_num):
+	atom_num = int(self.tot_of_dos.get())
+	self.dos_graph_execute=True
+	self.atoms=[]
+	self.atoms_image = PhotoImage(file="template/inner_button_2_so.gif")
+	self.total_check_var = IntVar()
+	self.total_check = Checkbutton(self.right_frame, text="total", variable=self.total_check_var)
+	
+	self.atoms_image_label = Label(self.right_frame, image = self.atoms_image, padx=0, pady=0, borderwidth=0,bd=0)
+	self.atoms_image_label.grid(row=6,column=0, padx=0,columnspan=2,pady=0,sticky=W)
+	self.total_check.grid(row=6, column=2, padx=5, pady=3)
+	for i in range(atom_num):
+	    atoms_tot=IntVar()
+	    atoms_s=IntVar()
+	    atoms_p=IntVar()
+	    atoms_d=IntVar()
+	    atoms_tot_check = Checkbutton(self.right_frame, text="tot",variable=atoms_tot)
+	    atoms_s_check = Checkbutton(self.right_frame, text="s",variable=atoms_s)
+	    atoms_p_check = Checkbutton(self.right_frame, text="p",variable=atoms_p)
+	    atoms_d_check = Checkbutton(self.right_frame, text="d",variable=atoms_d)
+	    temp_list = [atoms_tot, atoms_s, atoms_p, atoms_d]
+	    self.atoms.append(temp_list)
+	    temp_label = Label(self.right_frame, text=str(i+1), padx=0, pady=0, borderwidth=0, bd=0)
+	    temp_label.grid(row=7+i, column=0,sticky=W)
+	    atoms_tot_check.grid(row=7+i,column=1)
+	    atoms_s_check.grid(row=7+i,column=2)
+	    atoms_p_check.grid(row=7+i,column=3)
+	    atoms_d_check.grid(row=7+i,column=4)
+	self.draw_graph_image = PhotoImage(file="template/inner_button_1_execute.gif")
+	self.draw_graph_button = Button(self.right_frame,image=self.draw_graph_image, command=lambda a=atom_num: self.execute_dos_cal(a))
+	self.draw_graph_button.grid(row=7+i+1,column=0,columnspan=5)
 
 
     def show_entry(self,op):
@@ -41,14 +75,37 @@ class Dos_Calculation():
                 f.write(line)
             f.write(instruction)
 	    f.close()
-
 	    
+	    self.execute_button_toggle=True
+	    self.tot_of_dos = Spinbox(self.right_frame, from_=1, to=10,width=5)
+	    int_file = open("/home/wien2k/work/gui/gui.int","r")
+	    self.line_one = int_file.readline()
+	    self.line_two = int_file.readline()
+	    l = int_file.readline()
+	    temp_input = l.split()
+	    print temp_input
+	    
+	    #self.num_of_atom = int(temp_input[1])
+	    #print "num of atom = " + str(self.num_of_atom)
+	    #self.make_dos_option(self.num_of_atom)
+	    self.total_number_of_dos = Label(self.right_frame, text="total number of dos", padx=0, pady=0, borderwidth=0,bd=0)
+	    self.total_number_of_dos.grid(row=4,column=0, columnspan=2,sticky=W)
+	    self.tot_of_dos.grid(row=4, column=2)
+	    self.dos_graph_execute_image= PhotoImage(file="template/inner_button_1_execute.gif")
+	    self.dos_graph_execute = Button(self.right_frame, text="Execute",
+					image=self.dos_graph_execute_image,
+					command=lambda n=self.tot_of_dos.get() : self.make_dos_option(int(n)))
+	    self.dos_graph_execute.grid(row=5,column=0,columnspan=5,sticky=W, padx=0, pady=0)
 
-	    self.text_editor = text_editor.Text_Editor(self.root,self.right_frame)
-	    self.text_editor.show_entry()
+
+
+
+	    #self.text_editor = text_editor.Text_Editor(self.root,self.right_frame)
+	    #self.text_editor.show_entry()
             return
 
-
+	
+	
         if not self.init_toggles[op]:
             self.init_toggles[op]=True
             self.init_buttons[op].config(image = self.inner_button_2[op])
@@ -83,6 +140,8 @@ class Dos_Calculation():
 	self.init_buttons=[]
 	self.inner_button_1=[]
 	self.inner_button_2=[]
+	self.execute_button_toggle=False
+	self.dos_graph_execute_toggle=False
 	self.name_image = PhotoImage(file = "template/name_run_calculation.gif")
 	
 	for i in range(len(button_name)):
@@ -105,14 +164,14 @@ class Dos_Calculation():
 	
 	self.name_label = Label(self.right_frame, image = self.name_image,
                                         padx=0,pady=0,borderwidth=0,bd=0)
-        self.name_label.grid(row=0,column=0,sticky=W,padx=2,
+        self.name_label.grid(row=0,column=0,padx=2,sticky=W,
                                 columnspan=5,pady=10)
 
         for i in range(2):
             self.init_buttons[i].grid(row=i+1,column=0,sticky=W,
                                             padx=init_buttons_padx,
                                             pady=init_buttons_pady)
-	self.init_buttons[2].grid(row=3,column=0,columnspan=5, sticky=W,
+	self.init_buttons[2].grid(row=3,column=0,columnspan=5,sticky=W,
 				padx=0,pady=0)
 
     def write_machines(self,p):
