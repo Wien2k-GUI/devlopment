@@ -2,6 +2,7 @@ import os
 import start
 import run_calculation
 import tkMessageBox
+import draw_graph
 import text_editor
 import time
 import subprocess
@@ -12,13 +13,45 @@ class Dos_Calculation():
 	self.root = root
 	self.right_frame = right_frame
 	self.so_execute = False
+	self.number_of_atoms=0
+	self.dos_graph_execute=False
     def execute_dos_cal(self, atom_num):
-	pass
+	int_file = open("/home/wien2k/work/gui/gui.int","w")
+	int_file.write(self.line_one)
+	int_file.write(self.line_two)
+	int_file.write("  " + self.tot_of_dos.get() + "     " + self.tot_of_atoms.get() + "    0.000\n")
+	if self.total_check_var.get():
+	    int_file.write("    0     1    total\n")
+	for i in range(atom_num):
+	    for j in range(4):
+		if self.atoms[i][j].get():
+		    int_file.write("    " + str(i+1)+"     " + str(j+1)+"    "+
+				"Atom" + str(i+1) + " ")
+		    if j==0:
+			int_file.write("tot\n")
+		    elif j==1:
+			int_file.write("s\n")
+		    elif j==2:
+			int_file.write("p\n")
+		    elif j==3:
+			int_file.write("d\n")
+	
+	instruction = "x tetra "
+	if self.so_value.get() and self.so_execute:
+	    instruction+="-so"
+	self.draw_graph = draw_graph.Draw_Graph('gui','/home/wien2k/work/gui')
+	int_file.close()
+	os.system(instruction)
+	self.draw_graph.draw_dos1ev()
+	print "Drawing dos1ev is completed!"
+
 
     def make_dos_option(self, atom_num):
-	atom_num = int(self.tot_of_dos.get())
+	atom_num = int(self.tot_of_atoms.get())
+	self.number_of_atoms=atom_num
 	self.dos_graph_execute=True
 	self.atoms=[]
+	self.atoms_checkbuttons=[]
 	self.atoms_image = PhotoImage(file="template/inner_button_2_so.gif")
 	self.total_check_var = IntVar()
 	self.total_check = Checkbutton(self.right_frame, text="total", variable=self.total_check_var)
@@ -39,6 +72,7 @@ class Dos_Calculation():
 	    self.atoms.append(temp_list)
 	    temp_label = Label(self.right_frame, text=str(i+1), padx=0, pady=0, borderwidth=0, bd=0)
 	    temp_label.grid(row=7+i, column=0,sticky=W)
+	    self.atoms_checkbuttons.append([temp_label,atoms_tot_check,atoms_s_check,atoms_p_check,atoms_d_check])
 	    atoms_tot_check.grid(row=7+i,column=1)
 	    atoms_s_check.grid(row=7+i,column=2)
 	    atoms_p_check.grid(row=7+i,column=3)
@@ -78,12 +112,14 @@ class Dos_Calculation():
 	    
 	    self.execute_button_toggle=True
 	    self.tot_of_dos = Spinbox(self.right_frame, from_=1, to=10,width=5)
+	    self.tot_of_atoms=Spinbox(self.right_frame, from_=1, to=10,width=5)
 	    int_file = open("/home/wien2k/work/gui/gui.int","r")
 	    self.line_one = int_file.readline()
 	    self.line_two = int_file.readline()
-	    l = int_file.readline()
-	    temp_input = l.split()
-	    print temp_input
+	    #l = int_file.readline()
+	    #temp_input = l.split()
+	    #print temp_input
+	    int_file.close()
 	    
 	    #self.num_of_atom = int(temp_input[1])
 	    #print "num of atom = " + str(self.num_of_atom)
@@ -91,11 +127,12 @@ class Dos_Calculation():
 	    self.total_number_of_dos = Label(self.right_frame, text="total number of dos", padx=0, pady=0, borderwidth=0,bd=0)
 	    self.total_number_of_dos.grid(row=4,column=0, columnspan=2,sticky=W)
 	    self.tot_of_dos.grid(row=4, column=2)
+	    self.tot_of_atoms.grid(row=4, column=3)
 	    self.dos_graph_execute_image= PhotoImage(file="template/inner_button_1_execute.gif")
-	    self.dos_graph_execute = Button(self.right_frame, text="Execute",
+	    self.dos_graph_execute_bt = Button(self.right_frame, text="Execute",
 					image=self.dos_graph_execute_image,
 					command=lambda n=self.tot_of_dos.get() : self.make_dos_option(int(n)))
-	    self.dos_graph_execute.grid(row=5,column=0,columnspan=5,sticky=W, padx=0, pady=0)
+	    self.dos_graph_execute_bt.grid(row=5,column=0,columnspan=5,sticky=W, padx=0, pady=0)
 
 
 
@@ -134,6 +171,18 @@ class Dos_Calculation():
             self.so_button.grid_forget()
         if self.init_toggles[1]:
             self.p_value.grid_forget()
+	if self.dos_graph_execute:
+	    self.draw_graph_button.grid_forget()
+	    self.atoms_image_label.grid_forget()
+	    self.total_check.grid_forget()
+	    for i in range(self.number_of_atoms):
+		for j in range(5):
+		    self.atoms_checkbuttons[i][j].grid_forget()
+	if self.execute_button_toggle:
+	    self.tot_of_dos.grid_forget()
+	    self.tot_of_atoms.grid_forget()
+	    self.dos_graph_execute_bt.grid_forget()
+	    self.total_number_of_dos.grid_forget()
     def create_menu(self):
 	button_name = ['So','P','Execute']
 	self.init_toggles=[]
