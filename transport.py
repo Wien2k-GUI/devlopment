@@ -23,9 +23,11 @@ class Transport():
 	    os.system("rm -rf ./trans/")
 	    os.system("mkdir trans")
 	    os.system("cp " + self.case + ".struct ./trans/")
-	    os.system("cp " + self.case + ".energy* ./trans/")
 	    if self.so_executed:
+		print "cp " + self.case + ".energyso* ./trans/"
 		os.system("cp " + self.case + ".energyso* ./trans/")
+	    print "cp " + self.case + ".energy* ./trans/"
+	    os.system("cp " + self.case + ".energy* ./trans/")
 	    if os.path.exists("/home/wien2k/work/" + self.case + "/"+self.case+".inso"):
 		self.boltztrap_folder = "/home/wien2k/boltz/comiled/"
 	    os.system("cp " + self.boltztrap_folder + "trans.intrans ./trans")
@@ -34,6 +36,16 @@ class Transport():
 	    os.chdir("./trans/")
 	    os.system("chmod +x gather_energy.pl")
 	    os.system("./gather_energy.pl " + self.case)
+
+	    os.system("grep :FER ../scf/"+self.case+".scf >> fermi.temp")
+	    if os.path.exists("/home/wien2k/work/" + self.case + "/" + "scf/" + self.case + ".in2"):
+		os.system("grep NE ../scf/" + self.case+".in2 >> ne.temp")
+	    else:
+		os.system("grep NE ../scf/" + self.case+".in2c >> ne.temp")
+
+	    os.system("cp " + self.boltztrap_folder + "/BoltzTraP.def ./")
+	    os.system("cp " + self.case + ".energy trans.energy")
+	    os.system("cp " + self.case + ".struct trans.struct")
 		
 	 
         '''if not self.init_toggles[op]:
@@ -64,6 +76,7 @@ class Transport():
             self.so_button.grid_forget()
         if self.init_toggles[1]:
             self.p_value.grid_forget()
+	os.chdir("/home/wien2k/work/gui")
     def create_menu(self):
 	button_name = ['So','P','Execute']
 	self.init_toggles=[]
