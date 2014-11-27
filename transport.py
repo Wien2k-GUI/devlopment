@@ -13,7 +13,17 @@ class Transport():
 	self.right_frame = right_frame
 	self.case = "gui"
 	self.so_executed=False
+	self.transport_execute=False
 	self.boltztrap_folder = "./boltztrap_folder/"
+    def execute_boltz(self):
+
+	self.fermi_ne()
+	os.system("cp " + self.boltztrap_folder + "/BoltzTraP.def ./")
+	os.system("cp " + self.case + ".energy trans.energy")
+	os.system("cp " + self.case + ".struct trans.struct")
+	os.system(self.boltztrap_folder+"/src/BoltzTraP BoltzTraP.def")
+
+	os.system("grep VOLUME trans.outputtrans >> volume.temp")
 
     def fermi_ne(self):
 	ne_file = open("ne.temp","r")
@@ -49,7 +59,7 @@ class Transport():
 
     def show_entry(self,op):
         if op==2:#When Excute button is toggled
-	    
+	    self.transport_execute=True
            
 	    os.system("rm -rf ./trans/")
 	    os.system("mkdir trans")
@@ -73,13 +83,14 @@ class Transport():
 		os.system("grep NE ../test/" + self.case+".in2 >> ne.temp")
 	    else:
 		os.system("grep NE ../test/" + self.case+".in2c >> ne.temp")
+	    
 
-	    self.fermi_ne()
-	
+	    self.boltz_execute_image = PhotoImage(file="../template/inner_button_1_boltztrap_execute.gif")
+	    self.boltz_execute_bt = Button(self.right_frame, text="Execute",
+					image = self.boltz_execute_image,
+					command=lambda n=1:self.execute_boltz())
+	    self.boltz_execute_bt.grid(row=4, column=0, columnspan=5, sticky=W,padx=0,pady=0)
 
-	    os.system("cp " + self.boltztrap_folder + "/BoltzTraP.def ./")
-	    os.system("cp " + self.case + ".energy trans.energy")
-	    os.system("cp " + self.case + ".struct trans.struct")
 		
 	 
         '''if not self.init_toggles[op]:
@@ -111,6 +122,8 @@ class Transport():
         if self.init_toggles[1]:
             self.p_value.grid_forget()
 	os.chdir("/home/wien2k/work/gui")
+	if self.transport_execute:
+	    self.boltz_execute_bt.grid_forget()
     def create_menu(self):
 	button_name = ['So','P','Transport_Execute']
 	self.init_toggles=[]
