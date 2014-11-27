@@ -52,13 +52,13 @@ class Dos_Calculation():
 	self.dos_graph_execute=True
 	self.atoms=[]
 	self.atoms_checkbuttons=[]
-	self.atoms_image = PhotoImage(file="template/inner_button_2_so.gif")
+	self.atoms_image = PhotoImage(file="template/inner_button_1_atoms.gif")
 	self.total_check_var = IntVar()
 	self.total_check = Checkbutton(self.right_frame, text="total", variable=self.total_check_var)
 	
 	self.atoms_image_label = Label(self.right_frame, image = self.atoms_image, padx=0, pady=0, borderwidth=0,bd=0)
-	self.atoms_image_label.grid(row=6,column=0, padx=0,columnspan=2,pady=0,sticky=W)
-	self.total_check.grid(row=6, column=2, padx=5, pady=3)
+	self.atoms_image_label.grid(row=7,column=0, padx=0,columnspan=2,pady=0,sticky=W)
+	self.total_check.grid(row=7, column=2, padx=5, pady=3)
 	for i in range(atom_num):
 	    atoms_tot=IntVar()
 	    atoms_s=IntVar()
@@ -70,16 +70,16 @@ class Dos_Calculation():
 	    atoms_d_check = Checkbutton(self.right_frame, text="d",variable=atoms_d)
 	    temp_list = [atoms_tot, atoms_s, atoms_p, atoms_d]
 	    self.atoms.append(temp_list)
-	    temp_label = Label(self.right_frame, text=str(i+1), padx=0, pady=0, borderwidth=0, bd=0)
-	    temp_label.grid(row=7+i, column=0,sticky=W)
+	    temp_label = Label(self.right_frame, text=str(i+1), padx=0, pady=0, borderwidth=0, bd=0,width=3)
+	    temp_label.grid(row=8+i, column=0,sticky=W+E)
 	    self.atoms_checkbuttons.append([temp_label,atoms_tot_check,atoms_s_check,atoms_p_check,atoms_d_check])
-	    atoms_tot_check.grid(row=7+i,column=1)
-	    atoms_s_check.grid(row=7+i,column=2)
-	    atoms_p_check.grid(row=7+i,column=3)
-	    atoms_d_check.grid(row=7+i,column=4)
+	    atoms_tot_check.grid(row=8+i,column=1)
+	    atoms_s_check.grid(row=8+i,column=2)
+	    atoms_p_check.grid(row=8+i,column=3)
+	    atoms_d_check.grid(row=8+i,column=4)
 	self.draw_graph_image = PhotoImage(file="template/inner_button_1_execute.gif")
 	self.draw_graph_button = Button(self.right_frame,image=self.draw_graph_image, command=lambda a=atom_num: self.execute_dos_cal(a))
-	self.draw_graph_button.grid(row=7+i+1,column=0,columnspan=5)
+	self.draw_graph_button.grid(row=8+i+1,column=0,columnspan=5)
 
 
     def show_entry(self,op):
@@ -87,10 +87,12 @@ class Dos_Calculation():
             instruction = "/home/wien2k/wien2k/x lapw2 -qtl "
 	    
             if self.init_toggles[0]:
-		if self.so_execute:
-		    instruction +="-so "
-		else:
-		    tkMessageBox.showwarning("Warning","so option is not yet executed.")
+		if self.so_value.get():
+		    if self.so_execute:
+			instruction +="-so "
+		    else:
+			tkMessageBox.showwarning("Warning","so option is not yet executed.")
+			return
 
             if self.init_toggles[1]:
 		instruction +="-p "
@@ -111,8 +113,8 @@ class Dos_Calculation():
 	    f.close()
 	    
 	    self.execute_button_toggle=True
-	    self.tot_of_dos = Spinbox(self.right_frame, from_=1, to=10,width=5)
-	    self.tot_of_atoms=Spinbox(self.right_frame, from_=1, to=10,width=5)
+	    self.tot_of_dos = Spinbox(self.right_frame, from_=1, to=10,width=3)
+	    self.tot_of_atoms=Spinbox(self.right_frame, from_=1, to=10,width=3)
 	    int_file = open("/home/wien2k/work/gui/gui.int","r")
 	    self.line_one = int_file.readline()
 	    self.line_two = int_file.readline()
@@ -126,13 +128,13 @@ class Dos_Calculation():
 	    #self.make_dos_option(self.num_of_atom)
 	    self.total_number_of_dos = Label(self.right_frame, text="total number of dos", padx=0, pady=0, borderwidth=0,bd=0)
 	    self.total_number_of_dos.grid(row=4,column=0, columnspan=2,sticky=W)
-	    self.tot_of_dos.grid(row=4, column=2)
-	    self.tot_of_atoms.grid(row=4, column=3)
-	    self.dos_graph_execute_image= PhotoImage(file="template/inner_button_1_execute.gif")
+	    self.tot_of_dos.grid(row=4, column=2,columnspan=1)
+	    self.tot_of_atoms.grid(row=5, column=2,columnspan=1)
+	    self.dos_graph_execute_image= PhotoImage(file="template/graph_option_1.gif")
 	    self.dos_graph_execute_bt = Button(self.right_frame, text="Execute",
 					image=self.dos_graph_execute_image,
 					command=lambda n=self.tot_of_dos.get() : self.make_dos_option(int(n)))
-	    self.dos_graph_execute_bt.grid(row=5,column=0,columnspan=5,sticky=W, padx=0, pady=0)
+	    self.dos_graph_execute_bt.grid(row=6,column=0,columnspan=5,sticky=W, padx=0, pady=0)
 
 
 
@@ -184,14 +186,14 @@ class Dos_Calculation():
 	    self.dos_graph_execute_bt.grid_forget()
 	    self.total_number_of_dos.grid_forget()
     def create_menu(self):
-	button_name = ['So','P','Execute']
+	button_name = ['So','P','x_lapw2_Execute']
 	self.init_toggles=[]
 	self.init_buttons=[]
 	self.inner_button_1=[]
 	self.inner_button_2=[]
 	self.execute_button_toggle=False
 	self.dos_graph_execute_toggle=False
-	self.name_image = PhotoImage(file = "template/name_run_calculation.gif")
+	self.name_image = PhotoImage(file = "template/name_dos_calculation.gif")
 	
 	for i in range(len(button_name)):
 	    tmp = PhotoImage(file = "template/inner_button_1_" + button_name[i].lower() + ".gif")

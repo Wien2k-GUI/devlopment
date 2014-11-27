@@ -24,7 +24,7 @@ class Application(Frame):
 				relief=RIDGE, height=640, width=164)
 	self.left_frame.pack_propagate(False)
 	self.right_frame = Frame(self.master, background="gray90",borderwidth=2,
-			relief=RIDGE, width=263,height=640)
+			relief=RIDGE, width=300,height=640)
 	self.right_frame.grid_propagate(False)
 	self.right_frame.pack(side=RIGHT,fill=BOTH)
 	self.left_frame.pack(side=LEFT,fill=BOTH)
@@ -86,7 +86,7 @@ class Application(Frame):
 		self.dos_cal_menu=0
 
 	    elif self.trans_menu:
-		self.radio_button[3].config(image = self.left_button_1[2])
+		self.radio_buttons[3].config(image = self.left_button_1[3])
 		self.transport.destroy_menu()
 		self.trans_menu = 0
 	    self.initial_cal = 1
@@ -106,7 +106,7 @@ class Application(Frame):
                 self.dos_cal_menu=0
 
 	    elif self.trans_menu:
-		self.radio_buttons[3].config(image = self.left_button_1[2])
+		self.radio_buttons[3].config(image = self.left_button_1[3])
 		self.transport.destroy_menu()
 		self.trans_menu = 0
 	    self.run_cal.create_menu()
@@ -124,14 +124,14 @@ class Application(Frame):
 		self.run_cal_menu=0
 		self.dos_cal.so_execute = self.run_cal.so_execute
 	    elif self.trans_menu:
-		self.radio_buttons[3].config(image = self.left_button_1[2])
+		self.radio_buttons[3].config(image = self.left_button_1[3])
 		self.transport.destroy_menu()
 		self.trans_menu = 0
 	    print 3
 	    self.dos_cal.create_menu()
 	    self.dos_cal_menu = 1
 	elif self.tab_menu.get()==4:
-	    self.radio_buttons[3].config(image = self.left_button_2[2])
+	    self.radio_buttons[3].config(image = self.left_button_2[3])
 	    if self.initial_cal:
                 self.destroy_initial()
                 self.radio_buttons[0].config(image = self.left_button_1[0])
@@ -261,7 +261,8 @@ def main():
     app = Application(master=root)
 
 
-    app_width = 690
+    #app_width = 690
+    app_width = 464
     app_height=640
     app.master.title("Wien2k_GUI")
     app.master.configure(width=app_width,height=app_height)

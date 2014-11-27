@@ -15,6 +15,37 @@ class Transport():
 	self.so_executed=False
 	self.boltztrap_folder = "./boltztrap_folder/"
 
+    def fermi_ne(self):
+	ne_file = open("ne.temp","r")
+	ne_l = ne_file.readline().strip()
+	ne_list = ne_l.split()
+	print ne_list
+	ne_value = ne_list[1]
+	ne_file.close()
+	fermi_file = open("fermi.temp","r")
+	fermi_l = fermi_file.readline()
+	fermi_list = fermi_l.split("=")
+	fermi_value=fermi_list[1].strip()
+	#print ne_value, fermi_value
+	fermi_file.close()
+	
+	intrans_file = open("trans.intrans","r")
+	copy_original = intrans_file.readlines()
+	
+	intrans_file.close()
+	print copy_original[2].split()
+	modify_line = copy_original[2].split()
+	modify_line[3] = ne_value
+	modify_line[0] = fermi_value[0:7]
+	
+	intrans_file = open("trans.intrans","w")
+	intrans_file.write(copy_original[0])
+	intrans_file.write(copy_original[1])
+	intrans_file.write(' '.join(modify_line) + "\n")
+	
+	for i in range(len(copy_original)-3):
+	    intrans_file.write(copy_original[3+i])
+	intrans_file.close()
 
     def show_entry(self,op):
         if op==2:#When Excute button is toggled
@@ -37,11 +68,14 @@ class Transport():
 	    os.system("chmod +x gather_energy.pl")
 	    os.system("./gather_energy.pl " + self.case)
 
-	    os.system("grep :FER ../scf/"+self.case+".scf >> fermi.temp")
+	    os.system("grep :FER ../test/"+self.case+".scf >> fermi.temp")
 	    if os.path.exists("/home/wien2k/work/" + self.case + "/" + "scf/" + self.case + ".in2"):
-		os.system("grep NE ../scf/" + self.case+".in2 >> ne.temp")
+		os.system("grep NE ../test/" + self.case+".in2 >> ne.temp")
 	    else:
-		os.system("grep NE ../scf/" + self.case+".in2c >> ne.temp")
+		os.system("grep NE ../test/" + self.case+".in2c >> ne.temp")
+
+	    self.fermi_ne()
+	
 
 	    os.system("cp " + self.boltztrap_folder + "/BoltzTraP.def ./")
 	    os.system("cp " + self.case + ".energy trans.energy")
@@ -78,12 +112,12 @@ class Transport():
             self.p_value.grid_forget()
 	os.chdir("/home/wien2k/work/gui")
     def create_menu(self):
-	button_name = ['So','P','Execute']
+	button_name = ['So','P','Transport_Execute']
 	self.init_toggles=[]
 	self.init_buttons=[]
 	self.inner_button_1=[]
 	self.inner_button_2=[]
-	self.name_image = PhotoImage(file = "template/name_run_calculation.gif")
+	self.name_image = PhotoImage(file = "template/name_transport.gif")
 	
 	for i in range(len(button_name)):
 	    tmp = PhotoImage(file = "template/inner_button_1_" + button_name[i].lower() + ".gif")

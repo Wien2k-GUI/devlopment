@@ -39,14 +39,15 @@ class Run_Calculation():
 	    test_script.write(instruction)
 	    test_script.write("\nsave_lapw -a -f -d scf\n")
 	    if self.init_toggles[1]:
-		self.so_execute = True
-		f.write("initso\n")
-		f.write("run_lapw -so -p -ec "+self.ec_value.get()+"\n")
-		f.write("save_lapw -a -f -d so-scf\n")
+		if self.so_value.get():
+		    self.so_execute = True
+		    f.write("initso\n")
+		    f.write("run_lapw -so -p -ec "+self.ec_value.get()+"\n")
+		    f.write("save_lapw -a -f -d so-scf\n")
 		
-		test_script.write("initso\n")
-		test_script.write("run_lapw -so -p -ec "+self.ec_value.get()+"\n")
-		test_script.write("save_lapw -a -f -d so-scf\n")
+		    test_script.write("initso\n")
+		    test_script.write("run_lapw -so -p -ec "+self.ec_value.get()+"\n")
+		    test_script.write("save_lapw -a -f -d so-scf\n")
 	    
 	    test_script.close()
 	    f.close()
