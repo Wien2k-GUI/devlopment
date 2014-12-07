@@ -1,6 +1,6 @@
 import xlsxwriter
 import os
-
+import matplotlib.pyplot as mp
 
 class Draw_Graph():
     def __init__(self,folder_name,folder_path):
@@ -27,6 +27,7 @@ class Draw_Graph():
 	y_index = y_attribute.index(y_axis)
 	x_data = []
 	y_data = []
+	total_cnt=0
 	volume_file = open("volume.temp","r")
 	volume = round(float(volume_file.readline().strip().split()[1]),5)
 	volume_file.close()
@@ -38,24 +39,50 @@ class Draw_Graph():
 	headings=[]
 	if x_axis=='1':
 	    headings.append('carrier concentration')
-	else
+	else:
 	    headings.append('Fermi level')
 	headings.append(y_axis)
 	for line in K_lines:
 	    elem_line = line.strip().split()
 	    if x_axis=="1":
-		denom = volume*(0.529177^3)*10^-24
+		denom = volume*(0.529177**3)*(10**(-24))
 		x_value =  round(float(elem_line[2]),5) / denom
 	    else:
 		x_value = round(float(elem_line[0]),5)
 	    x_data.append(x_value)
 	    y_data.append(round(float(elem_line[y_index]),5))
+	    total_cnt = total_cnt+1
 	worksheet.write_row('A1',headings,bold)
 	worksheet.write_column('A2',x_data)
 	worksheet.write_column('B2',y_data)
 	
+	chart1 = workbook.add_chart({'type':'line'})
+
+        chart1.add_series({
+                'name':         '=Sheet1!$B$1',
+                'categories':   '=Sheet1!$A$2:$A$' + str(total_cnt+1),
+                'values':       '=Sheet1!$B$2:$B$' + str(total_cnt+1),
+                'line':         {'width' :1}
+        })
+
+        print 'total_cnt = ' + str(total_cnt)
+        chart1.set_title({'name':'Results of const_K'})
+        chart1.set_x_axis({'name' : headings[0]})
+        chart1.set_y_axis({'name' : y_axis})
+
+        chart1.set_style(10)
+        chart1.set_size({'x_scale':2,'y_scale':2})
+        worksheet.insert_chart('D2',chart1,{'x_offset' :25, 'y_offset':10})
+	
 	
 	workbook.close()
+	mp.ion()
+        mp.plot(x_data,y_data)
+        mp.title('Result Graph')
+        mp.xlabel('x_axis')
+        mp.ylabel('y_axis')
+        mp.draw()
+
 
     def export_trace(self):
 	f = open("trans.trace","r")
