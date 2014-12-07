@@ -16,9 +16,46 @@ class Draw_Graph():
 	f = open("trans.trace","r")
 
 	K_lines = []
-	#for line in r.readlines():
-	#    if line.strip().split()
+	K_value = round(float(K), 5)
+	f.readline()
+	for line in f.readlines():
+	    if round(float(line.strip().split()[1]),5)==K_value:
+		K_lines.append(line)
+		#print line
 	f.close()
+	y_attribute=['Ef','T','N','DOS','Seeback coefficient','sigma/tau','R_H','kappa0','c_e','chi']
+	y_index = y_attribute.index(y_axis)
+	x_data = []
+	y_data = []
+	volume_file = open("volume.temp","r")
+	volume = round(float(volume_file.readline().strip().split()[1]),5)
+	volume_file.close()
+	print "volume = " + str(volume)
+	workbook = xlsxwriter.Workbook(x_axis + '_' + y_axis + '.xlsx')
+	worksheet = workbook.add_worksheet()
+	bold = workbook.add_format({'bold':1})
+
+	headings=[]
+	if x_axis=='1':
+	    headings.append('carrier concentration')
+	else
+	    headings.append('Fermi level')
+	headings.append(y_axis)
+	for line in K_lines:
+	    elem_line = line.strip().split()
+	    if x_axis=="1":
+		denom = volume*(0.529177^3)*10^-24
+		x_value =  round(float(elem_line[2]),5) / denom
+	    else:
+		x_value = round(float(elem_line[0]),5)
+	    x_data.append(x_value)
+	    y_data.append(round(float(elem_line[y_index]),5))
+	worksheet.write_row('A1',headings,bold)
+	worksheet.write_column('A2',x_data)
+	worksheet.write_column('B2',y_data)
+	
+	
+	workbook.close()
 
     def export_trace(self):
 	f = open("trans.trace","r")

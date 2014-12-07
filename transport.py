@@ -2,6 +2,7 @@ import os
 import start
 import run_calculation
 import tkMessageBox
+import draw_graph
 import text_editor
 import time
 import subprocess
