@@ -8,9 +8,45 @@ class Draw_Graph():
 	self.folder_path = folder_path
 
 
-	#next two line will be deleted. It is just for test.
+	#next two lines will be deleted. It is just for test.
 	self.folder_name="gui"
 	self.folder_path="/home/wien2k/work/gui/"
+
+    def draw_const_K(self, K, x_axis, y_axis):
+	f = open("trans.trace","r")
+
+	K_lines = []
+	#for line in r.readlines():
+	#    if line.strip().split()
+	f.close()
+
+    def export_trace(self):
+	f = open("trans.trace","r")
+	workbook = xlsxwriter.Workbook('trans_trace.xlsx')
+	worksheet = workbook.add_worksheet()
+	bold = workbook.add_format({'bold':1})
+
+	headings = ['Ef[RY]', 'T[K]', 'N','DOS(Ef)','seedback coefficient', 'sigma/tau','R_H','kappa0', 'c_e','chi']
+	data_list=[]
+	for i in range(len(headings)):
+	    temp=[]
+	    data_list.append(temp)
+	data_flag = False #To avoid first line
+	
+	for line in f.readlines():
+	    if data_flag:
+		elem_line = line.strip().split()
+		for i in range(len(elem_line)):
+		    data_list[i].append(round(float(elem_line[i]),5))
+	    if ' Ef[Ry] ' in line and not data_flag:
+		data_flag = True
+	worksheet.write_row('A1',headings,bold)
+	alphabet_list = ['A','B','C','D','E','F','G','H','I','J']
+	for i in range(len(headings)):
+	    worksheet.write_column(alphabet_list[i]+'2',data_list[i])
+
+	workbook.close()
+	f.close()
 
     def draw_dos1ev(self):
 	f = open(self.folder_path+self.folder_name+".dos1ev","r")
@@ -57,13 +93,15 @@ class Draw_Graph():
 	worksheet.insert_chart('D2',chart1,{'x_offset' :25, 'y_offset':10})
 	
 	workbook.close()
+	f.close()
 	
 
 
 
 def draw_test():
     draw_graph = Draw_Graph('gui','/home/wien2k/work/gui')
-    draw_graph.draw_dos1ev()
+    #draw_graph.draw_dos1ev()
+    draw_graph.export_trace()
 
 
 if __name__== '__main__':

@@ -14,9 +14,16 @@ class Transport():
 	self.case = "gui"
 	self.so_executed=False
 	self.transport_execute=False
+	self.boltz_execute = False
 	self.boltztrap_folder = "./boltztrap_folder/"
+    def draw_graph1(self):
+	self.draw_graph = draw_graph.Draw_Graph('','')
+	self.draw_graph.draw_const_K(self.temperature_value.get(), 
+					self.x_axis_value.get(),
+					self.y_axis_value.get())
     def execute_boltz(self):
 
+	self.boltz_execute = True
 	self.fermi_ne()
 	os.system("cp " + self.boltztrap_folder + "/BoltzTraP.def ./")
 	os.system("cp " + self.case + ".energy trans.energy")
@@ -24,6 +31,44 @@ class Transport():
 	os.system(self.boltztrap_folder+"/src/BoltzTraP BoltzTraP.def")
 
 	os.system("grep VOLUME trans.outputtrans >> volume.temp")
+
+	self.temperature_label = Label(self.right_frame, text="Temperature(K)",padx=0,pady=0,borderwidth=0,bd=0)
+	self.x_axis_label = Label(self.right_frame, text="X-axis",padx=0,pady=0,borderwidth=0,bd=0)
+	self.y_axis_label = Label(self.right_frame, text="Y-axis",padx=0,pady=0,borderwidth=0,bd=0)
+	self.temperature_value = StringVar()
+	self.temperature_entry = Entry(self.right_frame, textvariable = self.temperature_value)
+	x_axis_list = [("Carrier concentration","1"),("Fermi level","2")]
+	
+	self.x_axis_value = StringVar()
+	self.x_axis_value.set("1")
+	self.x_axis_buttons=[]
+	self.y_axis_value = StringVar()
+	self.y_axis_value.set("DOS")
+	self.y_axis_option = OptionMenu(self.right_frame, self.y_axis_value,
+			"DOS","Seeback coefficient","sigma/tau","R_H","kappa0","c_e","chi")
+	self.draw_graph1_button = Button(self.right_frame, text="Execute",
+					command=lambda n=1 : self.draw_graph1())
+	
+	i=0
+
+	
+	self.temperature_label.grid(row=5,column=0,columnspan=2,sticky=W)
+	self.x_axis_label.grid(row=6,column=0,columnspan=2,sticky=W)
+	self.temperature_entry.grid(row=5,column=2,sticky=W)
+	
+	for text, val in x_axis_list:
+	    b = Radiobutton(self.right_frame,text=text, 
+				variable = self.x_axis_value, value=val)
+	    self.x_axis_buttons.append(b)
+	    b.grid(row=6+i,column=2,sticky=E)
+	    i=i+1
+	self.y_axis_label.grid(row=6+i,column=0,columnspan=2,sticky=W)
+	self.y_axis_option.grid(row=6+i,column=2,sticky=E)
+	self.draw_graph1_button.grid(row=7+i,column=0,columnspan=5,sticky=W)
+	
+
+	
+	
 
     def fermi_ne(self):
 	ne_file = open("ne.temp","r")
@@ -124,6 +169,15 @@ class Transport():
 	os.chdir("/home/wien2k/work/gui")
 	if self.transport_execute:
 	    self.boltz_execute_bt.grid_forget()
+	if self.boltz_execute:
+	    self.temperature_label.grid_forget()
+	    self.x_axis_label.grid_forget()
+	    self.y_axis_label.grid_forget()
+	    self.y_axis_option.grid_forget()
+	    self.temperature_entry.grid_forget()
+	    self.draw_graph1_button.grid_forget()
+	    for bts in self.x_axis_buttons:
+		bts.grid_forget()
     def create_menu(self):
 	button_name = ['So','P','Transport_Execute']
 	self.init_toggles=[]

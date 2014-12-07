@@ -127,7 +127,9 @@ class Dos_Calculation():
 	    #print "num of atom = " + str(self.num_of_atom)
 	    #self.make_dos_option(self.num_of_atom)
 	    self.total_number_of_dos = Label(self.right_frame, text="total number of dos", padx=0, pady=0, borderwidth=0,bd=0)
+	    self.total_number_of_atoms = Label(self.right_frame, text="atoms",padx=0,pady=0,borderwidth=0,bd=0)
 	    self.total_number_of_dos.grid(row=4,column=0, columnspan=2,sticky=W)
+	    self.total_number_of_atoms.grid(row=5,column=0,columnspan=2,sticky=W)
 	    self.tot_of_dos.grid(row=4, column=2,columnspan=1)
 	    self.tot_of_atoms.grid(row=5, column=2,columnspan=1)
 	    self.dos_graph_execute_image= PhotoImage(file="template/graph_option_1.gif")
@@ -185,6 +187,7 @@ class Dos_Calculation():
 	    self.tot_of_atoms.grid_forget()
 	    self.dos_graph_execute_bt.grid_forget()
 	    self.total_number_of_dos.grid_forget()
+	    self.total_number_of_atoms.grid_forget()
     def create_menu(self):
 	button_name = ['So','P','x_lapw2_Execute']
 	self.init_toggles=[]
