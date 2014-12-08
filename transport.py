@@ -18,10 +18,13 @@ class Transport():
 	self.boltz_execute = False
 	self.boltztrap_folder = "./boltztrap_folder/"
     def draw_graph1(self):
-	self.draw_graph = draw_graph.Draw_Graph('','')
+	self.draw_graph = draw_graph.Draw_Graph(self.root, '','')
 	self.draw_graph.draw_const_K(self.temperature_value.get(), 
 					self.x_axis_value.get(),
 					self.y_axis_value.get())
+    def draw_graph2(self):
+	self.draw_graph = draw_graph.Draw_Graph(self.root,'','')
+	self.draw_graph.draw_range_cc(self.x_low_value.get(), self.x_high_value.get(), self.y_axis_value2.get())
     def execute_boltz(self):
 
 	self.boltz_execute = True
@@ -35,7 +38,13 @@ class Transport():
 
 	self.temperature_label = Label(self.right_frame, text="Temperature(K)",padx=0,pady=0,borderwidth=0,bd=0)
 	self.x_axis_label = Label(self.right_frame, text="X-axis",padx=0,pady=0,borderwidth=0,bd=0)
+	self.x_axis_label2 = Label(self.right_frame, text="X-axis(C.C Range)", padx=0,pady=0,borderwidth=0,bd=0)
 	self.y_axis_label = Label(self.right_frame, text="Y-axis",padx=0,pady=0,borderwidth=0,bd=0)
+	self.y_axis_label2 = Label(self.right_frame, text="Y-axis",padx=0,pady=0,borderwidth=0,bd=0)
+	self.x_low_value = StringVar()
+	self.x_low_entry = Entry(self.right_frame, textvariable = self.x_low_value,width=10)
+	self.x_high_value = StringVar()
+	self.x_high_entry = Entry(self.right_frame, textvariable = self.x_high_value,width=10)
 	self.temperature_value = StringVar()
 	self.temperature_entry = Entry(self.right_frame, textvariable = self.temperature_value)
 	x_axis_list = [("Carrier concentration","1"),("Fermi level","2")]
@@ -46,9 +55,15 @@ class Transport():
 	self.y_axis_value = StringVar()
 	self.y_axis_value.set("DOS")
 	self.y_axis_option = OptionMenu(self.right_frame, self.y_axis_value,
-			"DOS","Seeback coefficient","sigma/tau","R_H","kappa0","c_e","chi")
-	self.draw_graph1_button = Button(self.right_frame, text="Execute",
+			"DOS","Seeback coefficient","sigma_tau","R_H","kappa0","c_e","chi")
+	self.y_axis_value2 = StringVar()
+	self.y_axis_value2.set("DOS")
+	self.y_axis_option2 = OptionMenu(self.right_frame, self.y_axis_value2,
+                        "DOS","Seeback coefficient","sigma_tau","R_H","kappa0","c_e","chi")
+	self.draw_graph1_button = Button(self.right_frame, text="Draw Graph Type 1",
 					command=lambda n=1 : self.draw_graph1())
+	self.draw_graph2_button = Button(self.right_frame, text="Draw Graph Type 2",
+					command=lambda n=1 : self.draw_graph2())
 	
 	i=0
 
@@ -66,6 +81,13 @@ class Transport():
 	self.y_axis_label.grid(row=6+i,column=0,columnspan=2,sticky=W)
 	self.y_axis_option.grid(row=6+i,column=2,sticky=E)
 	self.draw_graph1_button.grid(row=7+i,column=0,columnspan=5,sticky=W)
+	
+	self.x_axis_label2.grid(row=8+i,column=0,columnspan=2,sticky=W)
+	self.x_low_entry.grid(row=8+i,column=2)
+	self.x_high_entry.grid(row=8+i,column=3)
+	self.y_axis_label2.grid(row=9+i,column=0,columnspan=2,sticky=W)
+	self.y_axis_option2.grid(row=9+i,column=2,sticky=E)
+	self.draw_graph2_button.grid(row=10+i,column=0,columnspan=5, sticky=W)
 	
 
 	

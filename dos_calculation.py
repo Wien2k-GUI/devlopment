@@ -39,7 +39,7 @@ class Dos_Calculation():
 	instruction = "x tetra "
 	if self.so_value.get() and self.so_execute:
 	    instruction+="-so"
-	self.draw_graph = draw_graph.Draw_Graph('gui','/home/wien2k/work/gui')
+	self.draw_graph = draw_graph.Draw_Graph(self.root, 'gui','/home/wien2k/work/gui')
 	int_file.close()
 	os.system(instruction)
 	self.draw_graph.draw_dos1ev()
@@ -84,7 +84,7 @@ class Dos_Calculation():
 
     def show_entry(self,op):
         if op==2:#When Excute button is toggled
-            instruction = "/home/wien2k/wien2k/x lapw2 -qtl "
+            instruction = "x lapw2 -qtl "
 	    
             if self.init_toggles[0]:
 		if self.so_value.get():
@@ -111,6 +111,8 @@ class Dos_Calculation():
                 f.write(line)
             f.write(instruction)
 	    f.close()
+	
+	    os.system("x lapw2 -qtl")
 	    
 	    self.execute_button_toggle=True
 	    self.tot_of_dos = Spinbox(self.right_frame, from_=1, to=10,width=3)

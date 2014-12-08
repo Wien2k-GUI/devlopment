@@ -8,16 +8,16 @@ from matplotlib.figure import Figure
 from Tkinter import *
 
 class Show_Graph():
-    def __init__(self, root, right_frame,x_data, y_data):
+    def __init__(self, root,x_data, y_data):
 	matplotlib.use('TkAgg')
 	self.root = root
-	self.right_frame = right_frame
-	self.x_data
-	self.y_data
+	
+	self.x_data = x_data
+	self.y_data = y_data
 
     def show_entry(self):
 	self.show_graph = Toplevel(self.root)
-	f = Figure(figsize(5,4),dpi=100)
+	f = Figure(figsize=(5,4),dpi=100)
 	a = f.add_subplot(111)
 	
 	
@@ -30,7 +30,7 @@ class Show_Graph():
 	canvas = FigureCanvasTkAgg(f,master = self.show_graph)
 	canvas.show()
 	canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
-	canvas._tkcanvas.pack(side=Tk.TOP, fill=Tk.BOTH, expand=1)
+	canvas._tkcanvas.pack(side=TOP, fill=BOTH, expand=1)
 	
 	self.show_graph.mainloop()
 
