@@ -137,7 +137,7 @@ class Transport():
 		os.system("cp " + self.case + ".energyso* ./trans/")
 	    print "cp " + self.case + ".energy* ./trans/"
 	    os.system("cp " + self.case + ".energy* ./trans/")
-	    if os.path.exists("/home/wien2k/work/" + self.case + "/"+self.case+".inso"):
+	    if os.path.exists("../"+self.case+".inso"):
 		self.boltztrap_folder = "/home/wien2k/boltz/comiled/"
 	    os.system("cp " + self.boltztrap_folder + "trans.intrans ./trans")
 	    os.system("cp " + self.case + ".inso ./trans")
@@ -147,7 +147,7 @@ class Transport():
 	    os.system("./gather_energy.pl " + self.case)
 
 	    os.system("grep :FER ../test/"+self.case+".scf >> fermi.temp")
-	    if os.path.exists("/home/wien2k/work/" + self.case + "/" + "scf/" + self.case + ".in2"):
+	    if os.path.exists("../scf/" + self.case + ".in2"):
 		os.system("grep NE ../test/" + self.case+".in2 >> ne.temp")
 	    else:
 		os.system("grep NE ../test/" + self.case+".in2c >> ne.temp")
@@ -189,7 +189,7 @@ class Transport():
             self.so_button.grid_forget()
         if self.init_toggles[1]:
             self.p_value.grid_forget()
-	os.chdir("/home/wien2k/work/gui")
+	os.chdir("../")
 	if self.transport_execute:
 	    self.boltz_execute_bt.grid_forget()
 	if self.boltz_execute:
@@ -201,6 +201,12 @@ class Transport():
 	    self.draw_graph1_button.grid_forget()
 	    for bts in self.x_axis_buttons:
 		bts.grid_forget()
+	    self.x_axis_label2.grid_forget()
+            self.x_low_entry.grid_forget()
+            self.x_high_entry.grid_forget()
+            self.y_axis_label2.grid_forget()
+            self.y_axis_option2.grid_forget()
+            self.draw_graph2_button.grid_forget()
     def create_menu(self):
 	button_name = ['So','P','Transport_Execute']
 	self.init_toggles=[]

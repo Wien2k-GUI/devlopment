@@ -12,19 +12,24 @@ class Run_Calculation():
 	self.root = root
 	self.right_frame=right_frame 
 	self.exist = False
+	f = open("path.temp","r")
+	self.case = f.readline().strip().split('/')[-1]
+	f.close()
 	self.so_execute=False
     def show_entry(self,op):
 	if op==4:
-	    f = open("/home/wien2k/work/gui/qsub.sh","w")
-	    r = open("/home/wien2k/work/gui/qsub_bone.txt","r")
-	    instruction = "/home/wien2k/wien2k/run_lapw "
+	    #f = open("/home/wien2k/work/gui/qsub.sh","w")
+	    f = open("qsub.sh","w")
+	    #r = open("/home/wien2k/work/gui/qsub_bone.txt","r")
+	    r = open("qsub_bone.txt","r")
+	    instruction = "run_lapw "
 	    if self.init_toggles[0]:
 		instruction += "-ec " + self.ec_value.get() + " -p "
 	    
 	    #print instruction
 	    
 
-	    test_script = open("/home/wien2k/work/gui/testshell.sh","w")
+	    test_script = open("testshell.sh","w")
 	    f.write("#!/bin/tcsh -f\n")
 	    f.write("#PBS -l nodes=1:ppn=4\n")
 	    f.write("##PBS -l nodes=x028:ppn=4\n")
@@ -113,7 +118,7 @@ class Run_Calculation():
 	    self.qsub_button.grid_forget()
 	    
     def create_menu(self):
-	if os.path.exists("/home/wien2k/work/gui/gui.outputd"):
+	if os.path.exists(self.case + ".outputd"):
 	    print "True"
 	    self.exist = True
 	    print type(self.root)

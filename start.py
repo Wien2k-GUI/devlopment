@@ -150,7 +150,7 @@ class Application(Frame):
 	    self.trans_menu = 1
     def show_entry(self,op):
 	if op==6:#When Excute button is toggled
-	    instruction = "/home/wien2k/wien2k/init_lapw -b "
+	    instruction = "init_lapw -b "
 	    if self.init_toggles[0]:
 		instruction +="-red " + self.init_input_values[0].get() + " "
 		    
@@ -259,6 +259,9 @@ class Application(Frame):
 def main():
     root = Tk()
     app = Application(master=root)
+    if os.path.exists('path.temp'):
+	os.system('rm path.temp')
+    os.system("pwd >> path.temp")
 
 
     #app_width = 690

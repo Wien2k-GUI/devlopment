@@ -13,10 +13,14 @@ class Dos_Calculation():
 	self.root = root
 	self.right_frame = right_frame
 	self.so_execute = False
+	f = open("path.temp","r")
+	self.path = f.readline().strip()
+	self.case = self.path.split("/")[-1]
+	f.close()
 	self.number_of_atoms=0
 	self.dos_graph_execute=False
     def execute_dos_cal(self, atom_num):
-	int_file = open("/home/wien2k/work/gui/gui.int","w")
+	int_file = open(self.case + ".int","w")
 	int_file.write(self.line_one)
 	int_file.write(self.line_two)
 	int_file.write("  " + self.tot_of_dos.get() + "     " + self.tot_of_atoms.get() + "    0.000\n")
@@ -39,7 +43,7 @@ class Dos_Calculation():
 	instruction = "x tetra "
 	if self.so_value.get() and self.so_execute:
 	    instruction+="-so"
-	self.draw_graph = draw_graph.Draw_Graph(self.root, 'gui','/home/wien2k/work/gui')
+	self.draw_graph = draw_graph.Draw_Graph(self.root, self.case, self.path)
 	int_file.close()
 	os.system(instruction)
 	self.draw_graph.draw_dos1ev()
@@ -98,8 +102,8 @@ class Dos_Calculation():
 		instruction +="-p "
 		#self.write_machines(self.p_value.get())
 
-	    f = open("/home/wien2k/work/gui/qsub.sh","w")
-	    r = open("/home/wien2k/work/gui/qsub_bone.txt","r")
+	    f = open("qsub.sh","w")
+	    r = open("qsub_bone.txt","r")
 	
 	    f.write("#!/bin/tcsh -f\n")
             f.write("#PBS -l nodes=1:ppn=4\n")
@@ -117,7 +121,7 @@ class Dos_Calculation():
 	    self.execute_button_toggle=True
 	    self.tot_of_dos = Spinbox(self.right_frame, from_=1, to=10,width=3)
 	    self.tot_of_atoms=Spinbox(self.right_frame, from_=1, to=10,width=3)
-	    int_file = open("/home/wien2k/work/gui/gui.int","r")
+	    int_file = open(self.case + ".int","r")
 	    self.line_one = int_file.readline()
 	    self.line_two = int_file.readline()
 	    #l = int_file.readline()

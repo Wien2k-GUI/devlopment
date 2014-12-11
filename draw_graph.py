@@ -11,8 +11,6 @@ class Draw_Graph():
 
 
 	#next two lines will be deleted. It is just for test.
-	self.folder_name="gui"
-	self.folder_path="/home/wien2k/work/gui/"
     def draw_range_cc(self, low, high, y_axis):
 	f = open("trans.trace","r")
 	cc_lines=[]
